@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-billing"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-billing
+        name: "dcs-billing"
+    spec:
+      containers:
+        - name: dcs-billing
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-billing-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-billing
+              containerPort: 6777
+              protocol: "TCP"
+          volumeMounts:
+            - name: "dcs-billing-conf"
+              mountPath: "/dcs/config"
+            - name: "dcs-billing-data"
+              mountPath: "/dcs/logs"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "dcs-billing-data"
+          emptyDir: {}
+        - name: "dcs-billing-conf"
+          configMap:
+            name: "dcs-billing-conf"
+            items:
+              - key: "application.properties"
+                path: "application.properties"

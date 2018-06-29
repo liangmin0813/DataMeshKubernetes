@@ -1,0 +1,66 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-service"
+imageTag: "v0.0.1"
+
+# how many replicas to run
+replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+  #limits:
+  #  memory: 512Mi
+  #  cpu: 1000m
+
+####################### service_conf.toml ########################
+# service port, default "8822"
+#servicePort: 8822
+
+# logLevel: Debug,Info,Warn,Error,Fatal,Panic (case insensitive), default "Info"
+#logLevel: Info
+
+topDomain: datamesh.com
+sessionCookieName: dcs_portal_session
+#sessionCookieDomain: ""
+invitationConfirmAddress: http://dcs.datamesh.com/signup/#/invite
+
+services:
+  mailServiceHost: dcs-mail-svc-dcs-mail.dcs-central-apps.svc.cluster.local
+  mailServicePort: 8094
+  billingServiceHost: dcs-billing-svc-dcs-billing.dcs-central-apps.svc.cluster.local
+  billingServicePort: 6777
+  authServiceHost: dcs-auth-svc-dcs-auth.dcs-central-apps.svc.cluster.local
+  authServicePort: 10401
+
+mysql:
+  username: datamesh
+  password: datameshJ82q3FHoUfeef623xAE1
+  host: dcs-common-mysql-mysql.dcs-central-base.svc.cluster.local
+  #port: 3306
+  #dbname: DCS_PORTAL_DB

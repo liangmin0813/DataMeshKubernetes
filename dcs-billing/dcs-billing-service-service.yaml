@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dcs-billing
+  labels:
+    app: dcs-billing
+spec:
+  ports:
+  - name: dcs-billing
+    port: 6777
+    targetPort: 6777
+  clusterIP: None
+  selector:
+    app: dcs-billing

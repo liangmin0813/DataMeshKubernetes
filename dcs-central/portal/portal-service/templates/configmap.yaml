@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "portal-svc.fullname" . }}
+  labels:
+    app: {{ template "portal-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  service_conf.toml: |-
+    title = "SSO Configuration. Copyright @DataMesh, 2017."
+    service_port = ":{{ .Values.servicePort  | default "8822" }}"
+    log_level = {{ .Values.logLevel | default "Info" | quote }}
+
+    top_domain = {{ .Values.topDomain | quote }}
+    session_cookie_name = {{ .Values.sessionCookieName | quote }}
+    session_cookie_domain = {{ .Values.sessionCookieDomain | default "" | quote }}
+    invitation_confirm_address = {{ .Values.invitationConfirmAddress | quote }}
+
+    mail_server_address    = "http://{{ .Values.services.mailServiceHost }}:{{ .Values.services.mailServicePort }}/"
+    billing_server_address = "http://{{ .Values.services.billingServiceHost }}:{{ .Values.services.billingServicePort }}/"
+    auth_server_address    = "{{ .Values.services.authServiceHost }}:{{ .Values.services.authServicePort }}"
+    
+    [mysql_config]
+        Tag     = "dcs-portal-mysql"
+        Uname   = {{ .Values.mysql.username | quote}}
+        Passwd  = {{ .Values.mysql.password | quote}}
+        Host    = {{ .Values.mysql.host | quote}}
+        Port    = {{ .Values.mysql.port | default "3306" | quote }}
+        Dbname  = {{ .Values.mysql.dbname | default "DCS_PORTAL_DB" | quote }}
+        Charset = "UTF8"

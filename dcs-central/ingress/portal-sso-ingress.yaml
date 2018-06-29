@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: portal-sso-ingress
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - sso.datamesh.com
+    # This secret must exist beforehand
+    # The cert must also contain the subj-name foo.bar.com
+    # You can create it via:
+    # make keys secret SECRET=/tmp/foobar.json HOST=foo.bar.com NAME=foobar
+    # https://github.com/kubernetes/contrib/tree/master/ingress/controllers/gce/https_example
+    secretName: wildcard-datamesh-com
+  - hosts:
+    - portal.datamesh.com
+    secretName: wildcard-datamesh-com
+  - hosts:
+    - dcs.datamesh.com
+    secretName: wildcard-datamesh-com
+  rules:
+  - host: sso.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-sso-svc
+          servicePort: 8811
+        path: /
+  - host: portal.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-portal-fe
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-portal
+          servicePort: 8822
+        path: /api/
+  - host: dcs.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-portal-fe
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-portal
+          servicePort: 8822
+        path: /api/

@@ -1,0 +1,30 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-fe-service"
+imageTag: "v0.0.1"
+
+# how many replicas to run
+#replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 100m
+  #limits:
+  #  memory: 512Mi
+  #  cpu: 1000m
+
+####################### service config ########################
+# nginx port, default "80"
+#servicePort: 80
+
+dcsServerName: dcs.datamesh.com
+portalServerName: portal.datamesh.com
