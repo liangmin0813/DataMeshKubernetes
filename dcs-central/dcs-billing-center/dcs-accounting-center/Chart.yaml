@@ -1,0 +1,12 @@
+name: dcs-accounting-center
+version: 1.0.0
+description: dcs-accounting-center service for DCS.
+keywords:
+- dcs
+- central
+- dcs-accounting-center
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

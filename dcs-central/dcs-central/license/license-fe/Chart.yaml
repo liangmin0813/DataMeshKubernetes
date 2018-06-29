@@ -1,0 +1,11 @@
+name: license-web
+version: 1.0.0
+description: license fe service for DCS.
+keywords:
+- dcs
+- license
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

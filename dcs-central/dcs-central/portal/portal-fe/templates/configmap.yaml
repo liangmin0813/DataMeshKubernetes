@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dcs-portal-fe.fullname" . }}
+  labels:
+    app: {{ template "dcs-portal-fe.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  dcs.conf: |-
+    server {
+        listen {{ .Values.servicePort | default "80" }};
+        server_name {{ .Values.dcsServerName }};
+    
+        location / {
+            root /data/webpages/dcs;
+            index index.html;
+            try_files $uri $uri/ /index.html;
+        }
+    }
+
+  portal.conf: |-
+    server {
+        listen {{ .Values.servicePort | default "80" }};
+        server_name {{ .Values.portalServerName }};
+    
+      location / {
+          root /data/webpages/portal;
+          index index.html;
+          try_files $uri $uri/ /index.html;
+      }
+    }

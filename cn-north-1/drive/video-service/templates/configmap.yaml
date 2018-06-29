@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "drive-video-svc.fullname" . }}
+  labels:
+    app: {{ template "drive-video-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  service_conf.toml: |-
+    title = "DCS Drive Video Service Configuration. Copyright @DataMesh, 2017."
+    service_port = ":{{ .Values.servicePort  | default "10717" }}"
+    grpc_port = ":{{ .Values.grpcPort  | default "10707" }}"
+    log_level = {{ .Values.logLevel | default "Info" | quote }}
+
+    region = {{ .Values.region | quote }}
+
+    [mongo_config]
+        Address   = {{ .Values.mongo.address | quote }}
+        Username  = {{ .Values.mongo.username | default "" | quote }}
+        Password    = {{ .Values.mongo.password | default "" | quote }}
+        Dbname  = {{ .Values.mongo.dbname | default "DCS_BLOCK_SERVICE_DB" | quote }}
+
+    [oss_config]
+        Platform = {{ .Values.oss.platform | quote }}
+        Host = {{ .Values.oss.host | quote }}
+        Port = {{ .Values.oss.port | quote }}
+        AccessKeyID = {{ .Values.oss.accessKeyID | quote }}
+        SecretAccessKey = {{ .Values.oss.secretAccessKey | quote }}
+        ApiVersion = {{ .Values.oss.apiVersion | quote }}
+        Bucket = {{ .Values.oss.bucket | quote }}
+        UseSSL = {{ .Values.oss.useSSL }}
+
+    [tmp_oss_config]
+        Platform = {{ .Values.tmpOss.platform | quote }}
+        Host = {{ .Values.tmpOss.host | quote }}
+        Port = {{ .Values.tmpOss.port | quote }}
+        AccessKeyID = {{ .Values.tmpOss.accessKeyID | quote }}
+        SecretAccessKey = {{ .Values.tmpOss.secretAccessKey | quote }}
+        ApiVersion = {{ .Values.tmpOss.apiVersion | quote }}
+        Bucket = {{ .Values.tmpOss.bucket | quote }}
+        UseSSL = {{ .Values.tmpOss.useSSL }}

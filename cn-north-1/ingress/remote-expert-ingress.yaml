@@ -1,0 +1,78 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dcs-remote-expert-ingress
+  namespace: cn-north-1-apps
+  annotations:
+    #https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/annotations.md
+    nginx.ingress.kubernetes.io/class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-AccessKey,X-AccessSecret"
+spec:
+  tls:
+  - hosts:
+    - da.cn-north-1.datamesh.com
+    secretName: da-cn-north-1-datamesh-com
+  rules:
+  - host: da.cn-north-1.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-remote-expert-fe-remote-expert-web
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-digital-assistant-svc-0-digital-assistant
+          servicePort: 11010
+        path: /api/login
+      - backend:
+          serviceName: dcs-digital-assistant-svc-0-digital-assistant
+          servicePort: 11010
+        path: /api/logout
+      - backend:
+          serviceName: dcs-digital-assistant-svc-0-digital-assistant
+          servicePort: 11010
+        path: /api/userinfo
+      - backend:
+          serviceName: dcs-digital-assistant-svc-0-digital-assistant
+          servicePort: 11010
+        path: /v1/20
+      - backend:
+          serviceName: dcs-digital-assistant-svc-0-digital-assistant
+          servicePort: 11010
+        path: /v1/21
+      - backend:
+          serviceName: dcs-digital-assistant-svc-1-digital-assistant
+          servicePort: 11010
+        path: /v1/22
+      - backend:
+          serviceName: dcs-digital-assistant-svc-1-digital-assistant
+          servicePort: 11010
+        path: /v1/23
+      - backend:
+          serviceName: dcs-digital-assistant-svc-2-digital-assistant
+          servicePort: 11010
+        path: /v1/24
+      - backend:
+          serviceName: dcs-digital-assistant-svc-2-digital-assistant
+          servicePort: 11010
+        path: /v1/25
+      - backend:
+          serviceName: dcs-digital-assistant-svc-3-digital-assistant
+          servicePort: 11010
+        path: /v1/26
+      - backend:
+          serviceName: dcs-digital-assistant-svc-3-digital-assistant
+          servicePort: 11010
+        path: /v1/27
+      - backend:
+          serviceName: dcs-digital-assistant-svc-4-digital-assistant
+          servicePort: 11010
+        path: /v1/28
+      - backend:
+          serviceName: dcs-digital-assistant-svc-4-digital-assistant
+          servicePort: 11010
+        path: /v1/29

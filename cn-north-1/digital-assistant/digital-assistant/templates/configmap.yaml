@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dcs-digital-assistant.fullname" . }}
+  labels:
+    app: {{ template "dcs-digital-assistant.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  service_conf.toml: |-
+    title = "DCS-digital-assistant service configurations"
+    service_port = ":{{ .Values.servicePort  | default "11010" }}"
+    service_name = {{ .Values.auth.serviceName | default "digital-assistant" | quote }}
+    log_level = {{ .Values.logLevel | default "Debug" | quote }}
+
+    region = {{ .Values.region | quote }}
+    session_cookie_name = {{ .Values.sessionCookieName | quote }}
+    session_cookie_domain = {{ .Values.sessionCookieDomain | default "" | quote }}
+
+    login_path = {{ .Values.auth.loginPath | default "/api/login" | quote }}
+    logout_path = {{ .Values.auth.logoutPath | default "/api/logout" | quote }}
+    userinfo_path = {{ .Values.auth.userinfoPath | default "/api/userinfo" | quote }}
+    logout_redirect_path = {{ .Values.auth.logoutRedirectPath | quote }}
+
+    kms_server_address = "ws://{{ .Values.services.kmsServerHost }}:{{ .Values.services.kmsServerPort }}/{{ .Values.services.kmsServerApi }}"
+    auth_server_address = "{{ .Values.services.authServerHost }}:{{ .Values.services.authServerPort }}"
+    drive_server_address = "http://{{ .Values.services.driveServiceHost }}:{{ .Values.services.driveServicePort }}"
+
+    [mongo_config]
+        Address = {{ .Values.mongo.address | quote }}
+        Username = {{ .Values.mongo.username | default "" | quote }}
+        Password = {{ .Values.mongo.password | default "" | quote }}
+        Dbname = {{ .Values.mongo.dbname | default "DCS-DIGITAL-ASSISTANT-DB" | quote }}

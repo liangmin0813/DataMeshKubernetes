@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dcs-measuring-live.fullname" . }}
+  labels:
+    app: {{ template "dcs-measuring-live.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-measuring-live-svc
+    port: {{ .Values.servicePort | default "9011" }}
+    targetPort: {{ .Values.servicePort | default "9011" }}
+  clusterIP: None
+  selector:
+    app: {{ template "dcs-measuring-live.fullname" . }}

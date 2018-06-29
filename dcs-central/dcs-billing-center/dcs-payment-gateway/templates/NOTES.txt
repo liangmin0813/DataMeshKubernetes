@@ -1,0 +1,15 @@
+DCS dcs-payment-gateway service can be accessed via port {{ .Values.servicePort | default "9000" }} on the following DNS name from within your cluster:
+{{ template "dcs-payment-gateway.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To probe the liveness of the service:
+
+1. Run an Ubuntu pod that you can use as a client:
+
+    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+
+2. Install the mysql client:
+
+    $ apt-get update && apt install curl -y
+
+3. Connect to service:
+    $ curl -XGET {{ template "dcs-payment-gateway.fullname" . }}

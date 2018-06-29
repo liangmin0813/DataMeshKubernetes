@@ -1,0 +1,12 @@
+name: dcs-portal
+version: 1.0.0
+description: Portal service for DCS.
+keywords:
+- dcs
+- central
+- portal
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

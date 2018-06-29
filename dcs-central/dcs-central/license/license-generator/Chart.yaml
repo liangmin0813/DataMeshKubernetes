@@ -1,0 +1,12 @@
+name: lic-gen
+version: 1.0.0
+description: license-generator service for DCS.
+keywords:
+- dcs
+- central
+- dcs-lic-gen
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

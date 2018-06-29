@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "drive-svc.fullname" . }}
+  labels:
+    app: {{ template "drive-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  service_conf.toml: |-
+    title = "DCS Drive Configuration. Copyright @DataMesh, 2017."
+    service_port = ":{{ .Values.servicePort  | default "10710" }}"
+    log_level = {{ .Values.logLevel | default "Info" | quote }}
+
+    region = {{ .Values.region | quote }}
+
+    block_svc_grpc_host = {{ .Values.services.blockSvcGrpcHost | quote }}
+    block_svc_grpc_port = {{ .Values.services.blockSvcGrpcPort | default "10705" | quote }}
+
+    image_svc_grpc_host = {{ .Values.services.imageSvcGrpcHost | quote }}
+    image_svc_grpc_port = {{ .Values.services.imageSvcGrpcPort | default "10706" | quote }}
+
+    video_svc_grpc_host = {{ .Values.services.videoSvcGrpcHost | quote }}
+    video_svc_grpc_port = {{ .Values.services.videoSvcGrpcPort | default "10707" | quote }}
+    
+    [mongo_config]
+        Address   = {{ .Values.mongo.address | quote }}
+        Username  = {{ .Values.mongo.username | default "" | quote }}
+        Password    = {{ .Values.mongo.password | default "" | quote }}
+        Dbname  = {{ .Values.mongo.dbname | default "DCS_DRIVE_SERVICE_DB" | quote }}
+
+    [oss_config]
+        Platform = {{ .Values.oss.platform | quote }}
+        Host = {{ .Values.oss.host | quote }}
+        Port = {{ .Values.oss.port | quote }}
+        AccessKeyID = {{ .Values.oss.accessKeyID | quote }}
+        SecretAccessKey = {{ .Values.oss.secretAccessKey | quote }}
+        ApiVersion = {{ .Values.oss.apiVersion | quote }}
+        Bucket = {{ .Values.oss.bucket | quote }}
+        UseSSL = {{ .Values.oss.useSSL }}
+
+    [tmp_oss_config]
+        Platform = {{ .Values.tmpOss.platform | quote }}
+        Host = {{ .Values.tmpOss.host | quote }}
+        Port = {{ .Values.tmpOss.port | quote }}
+        AccessKeyID = {{ .Values.tmpOss.accessKeyID | quote }}
+        SecretAccessKey = {{ .Values.tmpOss.secretAccessKey | quote }}
+        ApiVersion = {{ .Values.tmpOss.apiVersion | quote }}
+        Bucket = {{ .Values.tmpOss.bucket | quote }}
+        UseSSL = {{ .Values.tmpOss.useSSL }}
+
+    [entity_type_mapping]
+        ".jpg" = "image"
+        ".jpeg" = "image"
+        ".png" = "image"
+        ".bmp" = "image"
+        ".mp4" = "video"

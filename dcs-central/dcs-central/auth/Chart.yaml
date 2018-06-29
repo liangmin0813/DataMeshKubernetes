@@ -1,0 +1,11 @@
+name: dcs-auth
+version: 1.0.0
+description: Mail service for DCS.
+keywords:
+- dcs
+- central
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

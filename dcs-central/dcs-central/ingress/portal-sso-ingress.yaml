@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: portal-sso-ingress
+  namespace: dcs-central-apps
+  annotations:
+    #https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/annotations.md
+    nginx.ingress.kubernetes.io/class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    ingress.kubernetes.io/tls-minimum-version: "1.0"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-AccessKey,X-AccessSecret"
+spec:
+  tls:
+  - hosts:
+    - sso.datamesh.com
+    # This secret must exist beforehand
+    # The cert must also contain the subj-name foo.bar.com
+    # You can create it via:
+    # make keys secret SECRET=/tmp/foobar.json HOST=foo.bar.com NAME=foobar
+    # https://github.com/kubernetes/contrib/tree/master/ingress/controllers/gce/https_example
+    secretName: wildcard-datamesh-com
+  - hosts:
+    - portal.datamesh.com
+    secretName: wildcard-datamesh-com
+  - hosts:
+    - dcs.datamesh.com
+    secretName: wildcard-datamesh-com
+  rules:
+  - host: sso.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-sso-svc-dcs-sso
+          servicePort: 8811
+        path: /
+  - host: portal.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-portal-fe-portal-web
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-portal-svc-dcs-portal
+          servicePort: 8822
+        path: /api/
+  - host: dcs.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-portal-fe-portal-web
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-portal-svc-dcs-portal
+          servicePort: 8822
+        path: /api/

@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-director-fe"
+metadata:
+  name: {{ template "dcs-director-fe.fullname" . }}
+  labels:
+    app: {{ template "dcs-director-fe.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas | default "2" }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dcs-director-fe.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "dcs-director-fe.fullname" . }}
+        image: "{{ .Values.image | default "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-director-fe-service" }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - name: dcs-director-fe
+            containerPort: {{ .Values.servicePort | default "80" }}
+        volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: {{ template "dcs-director-fe.fullname" . }}

@@ -1,0 +1,85 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-measuring-live-service"
+imageTag: "test"
+
+# how many replicas to run
+#replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: Always
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+
+####################### application.properties ########################
+# service port, default: 9011
+#servicePort: 9011
+apiKey: sk_test_NOYtC3wwNCPeCF8d5PfD9NRD
+servername: live-license
+
+auth:
+  #loginPath: /login
+  #logoutPath: /logout
+  #userinfoPath: /userinfo
+  logoutRedirectPath: https://sso.datamesh.com/logout
+  sessionCookieName: dcs_billing_session
+  #sessionCookieDomain: ""
+
+license:
+  licenseHost: dcs-lic-gen-svc-lic-gen.dcs-central-apps.svc.cluster.local
+  licensePort: 6500
+  api: license/devices
+
+services:
+  authServiceHost: dcs-auth-svc-dcs-auth.dcs-central-apps.svc.cluster.local
+  authGrpcPort: 10401
+  orderServiceHost: dcs-order-svc-dcs-order.dcs-central-apps.svc.cluster.local
+  orderGrpcPort: 50501
+  accountServiceHost: dcs-account-svc-dcs-account.dcs-central-apps.svc.cluster.local
+  accountServicePort: 9002
+  api: /stripe/customer/get
+
+datasource:
+  host: dcs-billing-center-mysql-mysql.dcs-central-base.svc.cluster.local
+  username: datamesh
+  password: datameshJ82q3FHoUfeef623xAE1
+  #port: 3306
+  #dbname: dcs_measuring_live_db
+  #tinyInt1isBit: true
+  #autoReconnect: true
+  #autoReconnectForPools: false
+  #useUnicode: true
+  #characterEncoding: UTF-8
+  #useSSL: false
+
+#show sql statement
+sql:
+  logging: error
+
+env:
+ javaOptions: -Xms512m -Xmx512m

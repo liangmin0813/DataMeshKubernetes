@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-portal-fe"
+metadata:
+  name: {{ template "dcs-portal-fe.fullname" . }}
+  labels:
+    app: {{ template "dcs-portal-fe.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas | default "3" }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dcs-portal-fe.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "dcs-portal-fe.fullname" . }}
+        image: "{{ .Values.image | default "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-fe-service" }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - name: dcs-portal-fe
+            containerPort: {{ .Values.servicePort | default "80" }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.servicePort | default "80" }}
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: nginx-conf
+          configMap:
+            name: {{ template "dcs-portal-fe.fullname" . }}

@@ -1,0 +1,63 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-payment-gateway-service"
+imageTag: "test"
+
+# how many replicas to run
+#replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: Always
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+####################### application.properties ########################
+# service port, default: 9000
+#servicePort: 9000
+#GrpcPort : 50500
+apiKey: sk_test_NOYtC3wwNCPeCF8d5PfD9NRD
+
+
+datasource:
+  host: dcs-billing-center-mysql-mysql.dcs-central-base.svc.cluster.local
+  username: datamesh
+  password: datameshJ82q3FHoUfeef623xAE1
+  #port: 3306
+  #dbname: dcs_payment_gateway_db
+  #tinyInt1isBit: true
+  #autoReconnect: true
+  #autoReconnectForPools: false
+  #useUnicode: true
+  #characterEncoding: UTF-8
+  #useSSL: false
+
+#show sql statement
+sql:
+  logging: error
+
+env:
+ javaOptions: -Xms512m -Xmx512m

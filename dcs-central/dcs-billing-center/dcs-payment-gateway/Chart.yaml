@@ -1,0 +1,12 @@
+name: dcs-payment-gateway
+version: 1.0.0
+description: dcs-payment-gateway service for DCS.
+keywords:
+- dcs
+- central
+- dcs-payment-gateway
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

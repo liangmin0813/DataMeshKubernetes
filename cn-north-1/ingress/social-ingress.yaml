@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dcs-social-ingress
+  namespace: cn-north-1-apps
+  annotations:
+    #https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/annotations.md
+    nginx.ingress.kubernetes.io/class: "nginx"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-AccessKey,X-AccessSecret"
+spec:
+  tls:
+  - hosts:
+    - social.cn-north-1.datamesh.com
+    secretName: social-cn-north-1-datamesh-com
+  rules:
+  - host: social.cn-north-1.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-social-fe-social-web
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-social-svc-dcs-social
+          servicePort: 8816
+        path: /api/

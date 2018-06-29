@@ -1,0 +1,66 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-drive-image-service"
+imageTag: "test"
+
+# how many replicas to run
+replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: Always
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m
+  limits:
+    memory: 1024Mi
+    cpu: 1000m
+
+####################### service_conf.toml ########################
+# service port, default "10715"
+#servicePort: 10716
+
+#grpcPort: 10706
+
+# logLevel: Debug,Info,Warn,Error,Fatal,Panic (case insensitive), default "Info"
+#logLevel: Info
+
+region: cn-north-1
+
+mongo:
+  address: dcs-drive-mongo-mongodb.cn-north-1-base.svc.cluster.local
+  #username: root
+  #password: adminJfe8P23kf89FE
+  #dbname: DCS_IMAGE_SERVICE_DB
+
+oss:
+  platform: Azure
+  host: core.chinacloudapi.cn
+  port: 443
+  accessKeyID: dcscnnorth1drivesvctest
+  secretAccessKey: 8lJt5DbYNY5Xen4byRM3ZtFj74/xCp8ir0CoxG7JkqKzzaxTlW6qyRJlVRDeZ3NOkjJteZxVnfVJIic6bvaHlA==
+  apiVersion: 2016-05-31
+  bucket: imagesvc
+  useSSL: true

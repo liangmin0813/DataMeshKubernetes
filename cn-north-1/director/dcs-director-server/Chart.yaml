@@ -1,0 +1,12 @@
+name: dcs-dir-srv
+version: 1.0.0
+description: director-server service for DCS.
+keywords:
+- dcs
+- director
+- server
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

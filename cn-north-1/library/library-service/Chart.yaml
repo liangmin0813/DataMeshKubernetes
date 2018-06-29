@@ -1,0 +1,11 @@
+name: dcs-library
+version: 1.0.0
+description: library service for DCS.
+keywords:
+- dcs
+- library
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

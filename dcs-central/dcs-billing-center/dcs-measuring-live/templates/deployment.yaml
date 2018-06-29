@@ -1,0 +1,75 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dcs-measuring-live.fullname" . }}
+  labels:
+    app: {{ template "dcs-measuring-live.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas | default "3" }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dcs-measuring-live.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "dcs-measuring-live.fullname" . }}
+        image: "{{ .Values.image | default "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-measuring-live-service" }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - name: dcs-me-live-svc
+            containerPort: {{ .Values.servicePort | default "9011" }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.servicePort | default "9011" }}
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: datadir
+            mountPath: /dcs/data
+          - name: dcs-measuring-live-conf
+            mountPath: /dcs/conf
+{{- if .Values.env }}
+        env:
+          - name: _JAVA_OPTIONS
+            value: {{ .Values.env.javaOptions | quote }}
+{{- end }}
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: dcs-measuring-live-conf
+          configMap:
+            name: {{ template "dcs-measuring-live.fullname" . }}
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: datadir
+        annotations:
+        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+        - name: datadir
+          emptyDir: {}
+{{- end }}

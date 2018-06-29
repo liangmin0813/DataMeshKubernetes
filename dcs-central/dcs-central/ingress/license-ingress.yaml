@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: license-ingress
+  namespace: dcs-central-apps
+  annotations:
+    #https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/annotations.md
+    nginx.ingress.kubernetes.io/class: "nginx"
+    #nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-AccessKey,X-AccessSecret"
+spec:
+  tls:
+  - hosts:
+    - license.datamesh.com
+    secretName: wildcard-datamesh-com
+  rules:
+  - host: license.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-license-fe-license-web
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-lic-gen-svc-lic-gen
+          servicePort: 6500
+        path: /license/
+      - backend:
+          serviceName: dcs-measuring-live-svc-dcs-measuring-live
+          servicePort: 9011
+        path: /api/
+      - backend:
+          serviceName: dcs-order-svc-dcs-order
+          servicePort: 9001
+        path: /o/
