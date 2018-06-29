@@ -1,0 +1,48 @@
+{
+  "apiVersion": "vlabs",
+  "properties": {
+    "orchestratorProfile": {
+      "orchestratorType": "Kubernetes",
+      "orchestratorVersion": "1.8.2"
+    },
+    "masterProfile": {
+      "count": 1,
+      "dnsPrefix": "dcs-central",
+      "vmSize": "Standard_DS3_v2_Promo",
+      "storageProfile" : "ManagedDisks",
+      "OSDiskSizeGB": 256
+    },
+    "agentPoolProfiles": [
+      {
+        "name": "pool1",
+        "count": 5,
+        "vmSize": "Standard_DS3_v2_Promo",
+        "storageProfile" : "ManagedDisks",
+        "OSDiskSizeGB": 256,
+        "availabilityProfile": "AvailabilitySet"
+      },
+      {
+        "name": "pool2",
+        "count": 5,
+        "vmSize": "Standard_DS3_v2_Promo",
+        "storageProfile" : "ManagedDisks",
+        "OSDiskSizeGB": 256,
+        "availabilityProfile": "AvailabilitySet"
+      }
+    ],
+    "linuxProfile": {
+      "adminUsername": "datamesh",
+      "ssh": {
+        "publicKeys": [
+          {
+            "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDSQ8vvxNxQpMTqhQPS+FpaKWujOs8I4SLSUNLxvg9GidWZH5xFIr2G+v+f7k97VpXV3aBWgJyjcoOOEh5qCbrLjtFGl9KCRDbf5LhOs/JPWF8mDIII8wxH7CWZ/SKyVmc7oZkgVptFCaO11dZEJ0Pt+XriAL+loKqw6It7r8ylKMviB4KoG0q5FiyY2jh8eVsrqU4dFu2ltAq4kyqlVzf5fp05GDpfMx0keXkqczFlc6197g4r+uGaBAteXDgqeTp3C/EbMjIUoYlZlFuVQqKRpugvWnrVOgfi6YF38ZpXwip6jyOV6p951R1hMGlLkQ2Zz7ANi629IlxTcImwlyy/ jianjunxie@81biz.com"
+          }
+        ]
+      }
+    },
+    "servicePrincipalProfile": {
+      "clientId": "a9f33ba1-faea-4ca6-aa38-40fcb2ff7798",
+      "secret": "65a8b8ee-d84d-48ed-ba8a-c2c20b74a01d"
+    }
+  }
+}
