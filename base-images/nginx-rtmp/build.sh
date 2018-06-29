@@ -1,0 +1,1 @@
+docker build -t datamesh/alpine-nginx-rtmp:1.0 .
