@@ -1,0 +1,46 @@
+## mysql image version
+## ref: https://hub.docker.com/r/library/mysql/tags/
+## known problems: newest version (5.7.20) would fail to start the container
+mysqlImage: mysql:5.7.13
+xtraBackupImage: registry.ap-southeast-1.aliyuncs.com/datamesh/xtrabackup:1.0
+
+mysqlha:
+  replicaCount: 3
+
+  ## Password for MySQL root user
+  ##
+  mysqlRootPassword: datamesh3i1udIesr1p8z0x173
+
+  ## Username/password for MySQL replication user
+  ##
+  mysqlReplicationUser: repl
+  # mysqlReplicationPassword:
+
+  ## Create a database user
+  ##
+  # mysqlUser:
+  # mysqlPassword: ## Default: random 10 character string
+
+
+  ## Allow unauthenticated access, uncomment to enable
+  ##
+  # mysqlAllowEmptyPassword: true
+
+  ## Create database with name and grant all permissions to user on startup, if needed
+  # mysqlDatabase:
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ##
+  storageClass: fast
+  accessMode: ReadWriteOnce
+  size: 50Gi
+
+resources:
+  requests:
+    cpu: 1
+    memory: 1Gi

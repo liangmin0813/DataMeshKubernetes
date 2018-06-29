@@ -1,0 +1,94 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: rabbitmq
+spec:
+  serviceName: rabbitmq
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:        
+      - name: rabbitmq-autocluster
+        image: registry.ap-southeast-1.aliyuncs.com/datamesh/rabbitmq-autocluster:3.6.14-r4
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 800m
+            memory: 512Mi
+        ports:
+          - name: http
+            protocol: TCP
+            containerPort: 15672
+          - name: amqp
+            protocol: TCP
+            containerPort: 5672
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+        livenessProbe:
+          exec:
+            command: ["rabbitmqctl", "status"]
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command: ["rabbitmqctl", "status"]
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        imagePullPolicy: Always
+        env:
+          - name: RABBITMQ_ERLANG_COOKIE
+            valueFrom:
+              secretKeyRef:
+                name: erlang.cookie
+                key: erlang.cookie
+          - name: MY_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: MY_POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: RABBITMQ_USE_LONGNAME
+            value: "true"
+          - name: K8S_SERVICE_NAME
+            value: "rabbitmq"
+          - name: RABBITMQ_NODENAME
+            value: "rabbit@$(MY_POD_NAME).rabbitmq.$(MY_POD_NAMESPACE).svc.cluster.local"
+          - name: AUTOCLUSTER_TYPE
+            value: "k8s"
+          - name: RABBITMQ_NODE_TYPE
+            value: disc
+          - name: AUTOCLUSTER_DELAY
+            value: "10"
+          - name: K8S_ADDRESS_TYPE
+            value: "hostname"
+          - name: K8S_HOSTNAME_SUFFIX
+            value: ".$(K8S_SERVICE_NAME).$(MY_POD_NAMESPACE).svc.cluster.local"
+          - name: AUTOCLUSTER_CLEANUP
+            value: "true"
+          - name: CLEANUP_WARN_ONLY
+            value: "false"
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "slow"
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 64Gi

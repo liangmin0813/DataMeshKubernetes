@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  master.cnf: |
+    # Apply this config only on the master.
+    [mysqld]
+    log-bin
+    skip_name_resolve
+    character_set_server = utf8
+    ## network
+    max_allowed_packet = 16M
+    max_connections = 1200
+    max_connect_errors = 10000
+    wait_timeout = 3600
+    ## open file and tables
+    open_files_limit = 50000
+    table_open_cache = 20000
+  slave.cnf: |
+    # Apply this config only on slaves.
+    [mysqld]
+    super-read-only
+    skip_name_resolve
+    character_set_server = utf8
+    ## network
+    max_allowed_packet = 16M
+    max_connections = 1200
+    max_connect_errors = 10000
+    wait_timeout = 3600
+    ## open file and tables
+    open_files_limit = 50000
+    table_open_cache = 20000
+  server-id.cnf: |
+    [mysqld]
+    server-id=@@SERVER_ID@@
+  create-replication-user.sql: |
+    CREATE USER IF NOT EXISTS '@@REPLICATION_USER@@' IDENTIFIED BY '@@REPLICATION_PASSWORD@@';
+    GRANT PROCESS, RELOAD, REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO '@@REPLICATION_USER@@';
+    FLUSH PRIVILEGES;

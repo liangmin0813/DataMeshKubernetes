@@ -1,0 +1,12 @@
+# https://blogs.technet.microsoft.com/livedevopsinjapan/2017/05/16/azure-disk-tips-for-kubernetes/
+# For SKU:
+# see https://docs.microsoft.com/en-us/rest/api/storagerp/srp_sku_types
+kind: StorageClass
+apiVersion: storage.k8s.io/v1beta1
+metadata:
+ name: fast
+provisioner: kubernetes.io/azure-disk
+parameters:
+ storageaccounttype: Premium_LRS
+ kind: Managed
+ location: chinanorth

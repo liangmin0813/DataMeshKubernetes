@@ -1,0 +1,408 @@
+---
+# Source: jenkins/templates/config.yaml
+
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: RELEASE-NAME-jenkins
+data:
+  config.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <hudson>
+      <disabledAdministrativeMonitors/>
+      <version>2.67</version>
+      <numExecutors>0</numExecutors>
+      <mode>NORMAL</mode>
+      <useSecurity>true</useSecurity>
+      <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+        <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
+      </authorizationStrategy>
+      <securityRealm class="hudson.security.LegacySecurityRealm"/>
+      <disableRememberMe>false</disableRememberMe>
+      <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+      <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
+      <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+      <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+      <jdks/>
+      <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+      <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+      <clouds>
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
+          <name>kubernetes</name>
+          <templates>
+            <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+              <inheritFrom></inheritFrom>
+              <name>default</name>
+              <instanceCap>2147483647</instanceCap>
+              <idleMinutes>0</idleMinutes>
+              <label>RELEASE-NAME-jenkins-slave</label>
+              <nodeSelector></nodeSelector>
+              <volumes>
+              </volumes>
+              <containers>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>jnlp</name>
+                  <image>jenkinsci/jnlp-slave:2.62</image>
+                  <privileged>false</privileged>
+                  <alwaysPullImage>false</alwaysPullImage>
+                  <workingDir>/home/jenkins</workingDir>
+                  <command></command>
+                  <args>${computer.jnlpmac} ${computer.name}</args>
+                  <ttyEnabled>false</ttyEnabled>
+                  <resourceRequestCpu>200m</resourceRequestCpu>
+                  <resourceRequestMemory>256Mi</resourceRequestMemory>
+                  <resourceLimitCpu>200m</resourceLimitCpu>
+                  <resourceLimitMemory>256Mi</resourceLimitMemory>
+                  <envVars>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>JENKINS_URL</key>
+                      <value>http://RELEASE-NAME-jenkins:8080</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                  </envVars>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+              </containers>
+              <envVars/>
+              <annotations/>
+              <imagePullSecrets/>
+              <nodeProperties/>
+            </org.csanchez.jenkins.plugins.kubernetes.PodTemplate></templates>
+          <serverUrl>https://kubernetes.default</serverUrl>
+          <skipTlsVerify>false</skipTlsVerify>
+          <namespace>NAMESPACE</namespace>
+          <jenkinsUrl>http://RELEASE-NAME-jenkins:8080</jenkinsUrl>
+          <jenkinsTunnel>RELEASE-NAME-jenkins-agent:50000</jenkinsTunnel>
+          <containerCap>10</containerCap>
+          <retentionTimeout>5</retentionTimeout>
+          <connectTimeout>0</connectTimeout>
+          <readTimeout>0</readTimeout>
+        </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
+      </clouds>
+      <quietPeriod>5</quietPeriod>
+      <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+      <views>
+        <hudson.model.AllView>
+          <owner class="hudson" reference="../../.."/>
+          <name>All</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+      </views>
+      <primaryView>All</primaryView>
+      <slaveAgentPort>50000</slaveAgentPort>
+      <label></label>
+      <nodeProperties/>
+      <globalNodeProperties/>
+      <noUsageStatistics>true</noUsageStatistics>
+    </hudson>
+  scriptapproval.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <scriptApproval plugin="script-security@1.27">
+      <approvedScriptHashes/>
+      <approvedSignatures>
+        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
+        <string>new groovy.json.JsonSlurperClassic</string>
+      </approvedSignatures>
+      <aclApprovedSignatures/>
+      <approvedClasspathEntries/>
+      <pendingScripts/>
+      <pendingSignatures/>
+      <pendingClasspathEntries/>
+    </scriptApproval>
+  apply_config.sh: |-
+    mkdir -p /usr/share/jenkins/ref/secrets/;
+    echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
+    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+    cp /var/jenkins_config/plugins.txt /var/jenkins_home;
+    /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
+    cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+  plugins.txt: |-
+    kubernetes:0.11
+    workflow-aggregator:2.5
+    workflow-job:2.13
+    credentials-binding:1.12
+    git:3.4.0
+---
+# Source: jenkins/templates/home-pvc.yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: RELEASE-NAME-jenkins
+  labels:
+    app: RELEASE-NAME-jenkins
+    chart: "jenkins-0.8.6"
+    release: "RELEASE-NAME"
+    heritage: "Tiller"
+  annotations:
+    volume.beta.kubernetes.io/storage-class: default
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "200Gi"
+
+---
+# Source: jenkins/templates/jenkins-agent-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: RELEASE-NAME-jenkins-agent
+  labels:
+    app: RELEASE-NAME-jenkins
+    chart: "jenkins-0.8.6"
+    component: "RELEASE-NAME-jenkins-master"
+spec:
+  ports:
+    - port: 50000
+      targetPort: 50000
+      name: slavelistener
+  selector:
+    component: "RELEASE-NAME-jenkins-master"
+  type: ClusterIP
+
+---
+# Source: jenkins/templates/jenkins-master-deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: RELEASE-NAME-jenkins
+  labels:
+    heritage: "Tiller"
+    release: "RELEASE-NAME"
+    chart: "jenkins-0.8.6"
+    component: "RELEASE-NAME-jenkins-master"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "RELEASE-NAME-jenkins-master"
+  template:
+    metadata:
+      labels:
+        app: RELEASE-NAME-jenkins
+        heritage: "Tiller"
+        release: "RELEASE-NAME"
+        chart: "jenkins-0.8.6"
+        component: "RELEASE-NAME-jenkins-master"
+      annotations:
+        checksum/config: 14d79970ada3ddb5d8a80eadda37b0332e9602772350368d192c894faef3b49c
+        pod.alpha.kubernetes.io/init-containers: '[
+              {
+                  "name": "copy-default-config",
+                  "image": "jenkinsci/jenkins:2.67",
+                  "imagePullPolicy": "Always",
+                  "command": [ "sh", "/var/jenkins_config/apply_config.sh" ],
+                  "volumeMounts": [
+                      {
+                          "name": "jenkins-config",
+                          "mountPath": "/var/jenkins_config"
+                      },
+                      {
+                          "name": "jenkins-home",
+                          "mountPath": "/var/jenkins_home"
+                      },
+                      {
+                          "name": "plugin-dir",
+                          "mountPath": "/usr/share/jenkins/ref/plugins/"
+                      },
+                      {
+                          "name": "secrets-dir",
+                          "mountPath": "/usr/share/jenkins/ref/secrets/"
+                      }
+                  ]
+              }
+          ]'
+    spec:
+      securityContext:
+        runAsUser: 0
+      serviceAccountName: "default"
+      containers:
+        - name: RELEASE-NAME-jenkins
+          image: "jenkinsci/jenkins:2.67"
+          imagePullPolicy: "Always"
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          env:
+            - name: JAVA_OPTS
+              value: ""
+            - name: JENKINS_OPTS
+              value: ""
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: RELEASE-NAME-jenkins
+                  key: jenkins-admin-password
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: RELEASE-NAME-jenkins
+                  key: jenkins-admin-user
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 50000
+              name: slavelistener
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+          volumeMounts:
+            -
+              mountPath: /var/jenkins_home
+              name: jenkins-home
+              readOnly: false
+            -
+              mountPath: /var/jenkins_config
+              name: jenkins-config
+              readOnly: true
+            -
+              mountPath: /usr/share/jenkins/ref/plugins/
+              name: plugin-dir
+              readOnly: false
+            -
+              mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
+              readOnly: false
+      volumes:
+      - name: jenkins-config
+        configMap:
+          name: RELEASE-NAME-jenkins
+      - name: plugin-dir
+        emptyDir: {}
+      - name: secrets-dir
+        emptyDir: {}
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: RELEASE-NAME-jenkins
+---
+# Source: jenkins/templates/jenkins-master-ingress.yaml
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    
+  name: RELEASE-NAME-jenkins
+spec:
+  rules:
+  - host: "sp.jenkins.datamesh.com"
+    http:
+      paths:
+      - backend:
+          serviceName: RELEASE-NAME-jenkins
+          servicePort: 8080
+  tls:
+    - hosts:
+      - sp.jenkins.datamesh.com
+      secretName: sp.jenkins.datamesh.com
+    
+
+---
+# Source: jenkins/templates/jenkins-master-networkpolicy.yaml
+
+
+---
+# Source: jenkins/templates/jenkins-master-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: RELEASE-NAME-jenkins
+  labels:
+    app: RELEASE-NAME-jenkins
+    heritage: "Tiller"
+    release: "RELEASE-NAME"
+    chart: "jenkins-0.8.6"
+    component: "RELEASE-NAME-jenkins-master"
+spec:
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8080
+      
+  selector:
+    component: "RELEASE-NAME-jenkins-master"
+  type: ClusterIP
+  
+
+---
+# Source: jenkins/templates/jenkins-test.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "RELEASE-NAME-ui-test-lbpxo"
+  annotations:
+    "helm.sh/hook": test-success
+    "pod.beta.kubernetes.io/init-containers": '[
+      {
+        "name": "test-framework",
+        "image": "dduportal/bats:0.4.0",
+        "command": ["bash", "-c", "
+          set -ex\n
+          # copy bats to tools dir\n
+          cp -R /usr/local/libexec/ /tools/bats/\n
+        "],
+        "volumeMounts": [
+          {"name": "tools", "mountPath": "/tools"}
+        ]
+      }
+    ]'
+spec:
+  containers:
+    - name: RELEASE-NAME-ui-test
+      image: jenkinsci/jenkins:2.67
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      volumeMounts:
+      - mountPath: /tests
+        name: tests
+        readOnly: true
+      - mountPath: /tools
+        name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: RELEASE-NAME-jenkins-tests
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never
+
+---
+# Source: jenkins/templates/rbac.yaml
+
+---
+# Source: jenkins/templates/secret.yaml
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: RELEASE-NAME-jenkins
+  labels:
+    app: RELEASE-NAME-jenkins
+    chart: "jenkins-0.8.6"
+    release: "RELEASE-NAME"
+    heritage: "Tiller"
+type: Opaque
+data:
+  
+  jenkins-admin-password: "cGQ3SUZhRU5JY20vNnRENFV1SDU="
+  
+  jenkins-admin-user: "YWRtaW4="
+---
+# Source: jenkins/templates/service-account.yaml
+
+---
+# Source: jenkins/templates/test-config.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: RELEASE-NAME-jenkins-tests
+data:
+  run.sh: |-
+    @test "Testing Jenkins UI is accessible" {
+      curl --retry 12 --retry-delay 10 RELEASE-NAME-jenkins:8080/login
+    }
+

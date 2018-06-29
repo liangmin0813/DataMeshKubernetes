@@ -1,0 +1,82 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-pvc-1
+  annotations: 
+    volume.beta.kubernetes.io/storage-class: slow
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-pvc-2
+  annotations: 
+    volume.beta.kubernetes.io/storage-class: slow
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-pvc-3
+  annotations: 
+    volume.beta.kubernetes.io/storage-class: slow
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-pvc-4
+  annotations: 
+    volume.beta.kubernetes.io/storage-class: slow
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-pvc-5
+  annotations: 
+    volume.beta.kubernetes.io/storage-class: slow
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: redis-pvc-6
+  annotations: 
+    volume.beta.kubernetes.io/storage-class: slow
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
