@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dcs-director.fullname" . }}
+  labels:
+    app: {{ template "dcs-director.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  service_conf.toml: |-
+    title = "DCS Director service configurations"
+    service_port = ":{{ .Values.servicePort  | default "10910" }}"
+    log_level = {{ .Values.logLevel | default "Info" | quote }}
+
+    session_cookie_name = {{ .Values.sessionCookieName | quote }}
+    session_cookie_domain = {{ .Values.sessionCookieDomain | default "" | quote }}
+    internal_access_token = {{ .Values.internalAccessToken | quote }}
+
+    login_path = {{ .Values.auth.loginPath | default "/login" | quote }}
+    logout_path = {{ .Values.auth.logoutPath | default "/logout" | quote }}
+    userinfo_path = {{ .Values.auth.userinfoPath | default "/userinfo" | quote }}
+    logout_redirect_path = {{ .Values.auth.logoutRedirectPath | quote }}
+    service_name = {{ .Values.auth.serviceName | default "director" | quote }}
+
+    library_server_address = "http://{{ .Values.services.libraryServiceHost }}:{{ .Values.services.libraryServicePort }}"
+    drive_server_address = "http://{{ .Values.services.driveServiceHost }}:{{ .Values.services.driveServicePort }}"
+    director_socket_server_address = "http://{{ .Values.services.directorServiceHost }}"
+    auth_server_address = "{{ .Values.services.authServiceHost }}:{{ .Values.services.authServicePort }}"
+
+    [mongo_config]
+        Address = {{ .Values.mongo.address | quote }}
+        Dbname = {{ .Values.mongo.dbname | default "DCS_DIRECTOR_DB" | quote }}
+
+ 

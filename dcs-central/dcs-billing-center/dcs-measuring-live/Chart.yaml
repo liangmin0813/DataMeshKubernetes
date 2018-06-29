@@ -1,0 +1,12 @@
+name: dcs-measuring-live
+version: 1.0.0
+description: dcs-measuring-live service for DCS.
+keywords:
+- dcs
+- central
+- dcs-measuring-live
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

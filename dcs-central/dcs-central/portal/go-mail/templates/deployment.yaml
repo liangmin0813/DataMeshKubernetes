@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dcsmail.fullname" . }}
+  labels:
+    app: {{ template "dcsmail.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas | default "3" }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "dcsmail.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "dcsmail.fullname" . }}
+        image: "{{ .Values.image | default "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-mail-service" }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - name: dcs-mail-svc
+            containerPort: {{ .Values.servicePort | default "8094" }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.servicePort | default "8094" }}
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: datadir
+            mountPath: /data/go-mail/data
+          - name: service-conf
+            mountPath: /data/go-mail/conf
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: service-conf
+          configMap:
+            name: {{ template "dcsmail.fullname" . }}
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: datadir
+        annotations:
+        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+        - name: datadir
+          emptyDir: {}
+{{- end }}

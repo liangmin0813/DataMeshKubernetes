@@ -1,0 +1,72 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-auth-service"
+imageTag: "v0.1.0"
+
+# how many replicas to run
+#replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m
+  #limits:
+  #  memory: 512Mi
+  #  cpu: 1000m
+
+####################### service_conf.toml ########################
+# service port, default "10400"
+#servicePort: 10400
+#grpcPort: 10401
+
+# logLevel: Debug,Info,Warn,Error,Fatal,Panic (case insensitive), default "Info"
+#logLevel: Info
+#partition: dcs
+region: us-west-1
+
+mysql:
+  username: datamesh
+  password: root2fsdj7823FIqpsf321grvO214r
+  host: dcs-central-mysql-slave.westus2.cloudapp.azure.com 
+  tlsConfig: skip-verify
+  #port: 3306
+  #dbname: DCS_PORTAL_DB
+
+cache:
+  address: dcs-auth-redis-redis.us-west-1-base.svc.cluster.local:6379
+  password: x12P3Adb3jiopwefFEfsd8923181Iwex23jif
+  #dbNum: 11
+  isCluster: false
+
+cas:
+  url: "https://sso.datamesh.com"
+
+mq:
+  username: datamesh
+  password: datamesh_53kl8123Oq1weA8x13hPqf2332ai1hf
+  host: mq.svc.datamesh.com
+  #port: 5672

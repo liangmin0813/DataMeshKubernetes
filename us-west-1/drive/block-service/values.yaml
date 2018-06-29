@@ -1,0 +1,64 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-drive-block-service"
+imageTag: "v0.1.0"
+
+# how many replicas to run
+replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 200m
+  limits:
+    memory: 1024Mi
+    cpu: 1000m
+
+####################### service_conf.toml ########################
+# service port, default "10715"
+#servicePort: 10715
+
+#grpcPort: 10705
+
+# logLevel: Debug,Info,Warn,Error,Fatal,Panic (case insensitive), default "Info"
+#logLevel: Info
+
+mongo:
+  address: dcs-drive-mongo-mongodb.us-west-1-base.svc.cluster.local
+  #username: root
+  #password: adminJfe8P23kf89FE
+  #dbname: DCS_BLOCK_SERVICE_DB
+
+oss:
+  platform: Azure
+  host: core.windows.net
+  port: 443
+  accessKeyID: dcsuswest1drivesvc
+  secretAccessKey: 5BmIByJ7Dcx9FLk8SIXO0wgnCF5a0hy1DDiZYsKDzu9idShfZN9k7oJT4900OmELmbxZsFV+e6syG24ypAaxWA==
+  apiVersion: 2016-05-31
+  bucket: blocksvc
+  useSSL: true

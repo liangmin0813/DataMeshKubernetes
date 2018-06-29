@@ -1,0 +1,12 @@
+name: dcs-account
+version: 1.0.0
+description: dcs-account service for DCS.
+keywords:
+- dcs
+- central
+- dcs-account
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

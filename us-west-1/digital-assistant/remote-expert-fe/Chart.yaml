@@ -1,0 +1,11 @@
+name: remote-expert-web
+version: 1.0.0
+description: remote-expert fe service for DCS.
+keywords:
+- dcs
+- remote-expert
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

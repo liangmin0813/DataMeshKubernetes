@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dcs-measuring-live.fullname" . }}
+  labels:
+    app: {{ template "dcs-measuring-live.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  application.properties: |-
+    server.port= {{ .Values.servicePort | default "9011" }}
+    stripe.apiKey = {{ .Values.apiKey }}
+    service.name = {{ .Values.servername }}
+
+    auth.login.path = {{ .Values.auth.loginPath | default "/login" }}
+    auth.logout.path = {{ .Values.auth.logoutPath | default "/logout" }}
+    auth.userinfo.path = {{ .Values.auth.userinfoPath | default "/userinfo" }}
+    auth.logout.redirect.path = {{ .Values.auth.logoutRedirectPath }}
+    auth.cookie.name = {{ .Values.auth.sessionCookieName }}
+    auth.cookie.domain={{ .Values.auth.sessionCookieDomain | default "" }}
+
+    #license url
+    license.device.url = http://{{ .Values.license.licenseHost }}:{{ .Values.license.licensePort }}/{{ .Values.license.api }}
+    license.token = 984059d2-75e1-430e-9b49-e96e4a818272
+
+    auth.grpc.host = {{ .Values.services.authServiceHost }}
+    auth.grpc.port = {{ .Values.services.authGrpcPort }} 
+    grpc.client.order.host[0] = {{ .Values.services.orderServiceHost }}
+    grpc.client.order.port[0] = {{ .Values.services.orderGrpcPort }}
+    dcs.account.url.cards = http://{{ .Values.services.accountServiceHost }}:{{ .Values.services.accountServicePort }}/{{ .Values.services.api }}
+
+    spring.datasource.url = jdbc:mysql://{{ .Values.datasource.host }}:{{ .Values.datasource.port | default "3306" }}/{{ .Values.datasource.dbname | default "dcs_measuring_live_db" }}?{{ .Values.datasource.tinyInt1isBit | default "true" }}&{{ .Values.datasource.autoReconnect | default "true" }}&{{ .Values.datasource.autoReconnectForPools | default "false" }}&{{ .Values.datasource.useUnicode | default "true" }}&{{ .Values.datasource.characterEncoding | default "UTF-8" }}&{{ .Values.datasource.useSSL | default "false" }}
+    spring.datasource.username = {{ .Values.datasource.username }}
+    spring.datasource.password = {{ .Values.datasource.password }}
+    spring.datasource.driver-class-name = com.mysql.jdbc.Driver
+    spring.datasource.maximum-pool-size = 50
+    spring.datasource.max-wait = 60000
+    spring.datasource.min-idle = 5
+    spring.datasource.initial-size = 5
+    spring.datasource.validation-query = SELECT 1
+    spring.datasource.test-on-borrow = true
+    spring.datasource.max-idle = 20
+    spring.datasource.dbcp2.validation-query = select 1
+    spring.jooq.sql-dialect = org.hibernate.dialect.MySQLDialect
+
+    #show sql statement
+    logging.level.org.hibernate.SQL = {{ .Values.sql.logging | default "info" }}
+    spring.jpa.generate-ddl = false
+
+

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dcs-digital-assistant.fullname" . }}
+  labels:
+    app: {{ template "dcs-digital-assistant.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-digital-assistant-svc
+    port: {{ .Values.servicePort | default "11010" }}
+    targetPort: {{ .Values.servicePort | default "11010" }}
+  clusterIP: None
+  selector:
+    app: {{ template "dcs-digital-assistant.fullname" . }}

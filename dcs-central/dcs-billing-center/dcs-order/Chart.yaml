@@ -1,0 +1,12 @@
+name: dcs-order
+version: 1.0.0
+description: dcs-order service for DCS.
+keywords:
+- dcs
+- central
+- dcs-order
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

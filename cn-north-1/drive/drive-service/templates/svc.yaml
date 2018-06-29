@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "drive-svc.fullname" . }}
+  labels:
+    app: {{ template "drive-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-drive-svc
+    port: {{ .Values.servicePort | default "10710" }}
+    targetPort: {{ .Values.servicePort | default "10710" }}
+  clusterIP: None
+  selector:
+    app: {{ template "drive-svc.fullname" . }}

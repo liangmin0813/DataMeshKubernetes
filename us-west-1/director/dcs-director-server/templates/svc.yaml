@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dcs-dir-srv.fullname" . }}
+  labels:
+    app: {{ template "dcs-dir-srv.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-dir-srv-svc
+    port: {{ .Values.servicePort | default "12121" }}
+    targetPort: {{ .Values.servicePort | default "12121" }}
+  clusterIP: None
+  selector:
+    app: {{ template "dcs-dir-srv.fullname" . }}

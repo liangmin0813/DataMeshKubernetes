@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dcs-sso.fullname" . }}
+  labels:
+    app: {{ template "dcs-sso.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  service_conf.toml: |-
+    title = "MeshExpert CAS SSO configurations"
+    service_port = ":{{ .Values.servicePort  | default "8811" }}"
+    log_level = {{ .Values.logLevel | default "Info" | quote }}
+    
+    [mysql_config]
+        Tag     = "dcs-portal-mysql"
+        Uname   = {{ .Values.mysql.username | quote }}
+        Passwd  = {{ .Values.mysql.password | quote }}
+        Host    = {{ .Values.mysql.host | quote }}
+        Port    = {{ .Values.mysql.port | default "3306" | quote }}
+        Dbname  = {{ .Values.mysql.dbname | default "DCS_PORTAL_DB" | quote }}
+        Charset = "UTF8"
+
+  sso_conf.yaml: |-
+    title: DCS SSO Service Config
+
+    url: {{ .Values.ssoUrl }}
+    top_domain: {{ .Values.topDomain }}
+    default_redirect_url: {{ .Values.defaultRedirectUrl }}
+    complete_register_url: {{ .Values.completeRegisterUrl }}
+    
+    ############################ message queue for SLO #######################
+    message_queue_conf:
+      username: {{ .Values.mq.username }}
+      password: {{ .Values.mq.password }}
+      host: {{ .Values.mq.host }}
+      port: {{ .Values.mq.port | default "5672" }}
+    
+    ############################ backend storage #############################
+    # 'mongodb' or 'mysql'
+    backend_type: mysql
+    mysql:
+      tag: "dcs-cas-mysql"
+      uname: {{ .Values.ssoMysql.username | quote }}
+      passwd: {{ .Values.ssoMysql.password | quote }}
+      host: {{ .Values.ssoMysql.host | quote}}
+      port: {{ .Values.ssoMysql.port | default "3306" | quote }}
+      dbname: {{ .Values.ssoMysql.dbname | default "DCS_SSO_DB" | quote }}
+      charset: "UTF8"
+    
+    redis:
+      address: {{ .Values.redis.address }}
+      password: {{ .Values.redis.password }}
+      db_num: {{ .Values.redis.dbNum | default "12" }}
+      is_cluster: {{ .Values.redis.isCluster }}
+
+    #middlewares:
+    #       - throttling
+    
+    throttling:
+      max_failures_by_ip: {{ .Values.throttling.maxFailuresByIp | default "100" }} 
+      max_failures_by_username: {{ .Values.throttling.maxFailuresByUsername | default "10" }} 
+      block_time: {{ .Values.throttling.blockTime | default "300" }} 
+    
+    ticket_validity:
+      login_ticket: {{ .Values.ticketValidity.loginTicket | default "3600" }}
+      ticket_granting_ticket: {{ .Values.ticketValidity.ticketGrantingTicket | default "604800" }}
+      service_ticket: {{ .Values.ticketValidity.serviceTicket | default "60" }}
+    
+    # protocol: basic
+    authenticator: basic    

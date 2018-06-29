@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "drive-block-svc.fullname" . }}
+  labels:
+    app: {{ template "drive-block-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-drive-block
+    port: {{ .Values.grpcPort | default "10705" }}
+    targetPort: {{ .Values.grpcPort | default "10705" }}
+  - name: dcs-drive-blk-h
+    port: {{ .Values.servicePort | default "10715" }}
+    targetPort: {{ .Values.servicePort | default "10715" }}
+  clusterIP: None
+  selector:
+    app: {{ template "drive-block-svc.fullname" . }}

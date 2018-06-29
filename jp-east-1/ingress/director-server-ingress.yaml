@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dcs-director-server-ingress
+  namespace: jp-east-1-apps
+  annotations:
+    #https://github.com/kubernetes/ingress-nginx/blob/master/docs/user-guide/annotations.md
+    nginx.ingress.kubernetes.io/class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+    nginx.org/websocket-services: "ws-svc"
+spec:
+  tls:
+  - hosts:
+    - director-srv.jp-east-1.datamesh.com
+    secretName: director-srv-jp-east-1-datamesh-com
+  rules:
+  - host: director-srv.jp-east-1.datamesh.com
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-dir-srv-svc-0-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/20
+      - backend:
+          serviceName: dcs-dir-srv-svc-0-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/21
+      - backend:
+          serviceName: dcs-dir-srv-svc-1-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/22
+      - backend:
+          serviceName: dcs-dir-srv-svc-1-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/23
+      - backend:
+          serviceName: dcs-dir-srv-svc-2-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/24
+      - backend:
+          serviceName: dcs-dir-srv-svc-2-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/25
+      - backend:
+          serviceName: dcs-dir-srv-svc-3-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/26
+      - backend:
+          serviceName: dcs-dir-srv-svc-3-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/27
+      - backend:
+          serviceName: dcs-dir-srv-svc-4-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/28
+      - backend:
+          serviceName: dcs-dir-srv-svc-4-dcs-dir-srv
+          servicePort: 12121
+        path: /v1/29

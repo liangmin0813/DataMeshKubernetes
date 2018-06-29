@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "dcs-director-fe.fullname" . }}
+  labels:
+    app: {{ template "dcs-director-fe.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  director.conf: |-
+    server {
+        listen {{ .Values.servicePort | default "80" }};
+        server_name {{ .Values.directorServerName }};
+    
+      location / {
+          root /data/webpages;
+          index index.html;
+          try_files $uri $uri/ /index.html;
+      }
+    }

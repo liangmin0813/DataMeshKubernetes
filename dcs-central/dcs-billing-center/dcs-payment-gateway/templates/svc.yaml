@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dcs-payment-gateway.fullname" . }}
+  labels:
+    app: {{ template "dcs-payment-gateway.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-payment-gateway-svc
+    port: {{ .Values.servicePort | default "9000" }}
+    targetPort: {{ .Values.servicePort | default "9000" }}
+  clusterIP: None
+  selector:
+    app: {{ template "dcs-payment-gateway.fullname" . }}

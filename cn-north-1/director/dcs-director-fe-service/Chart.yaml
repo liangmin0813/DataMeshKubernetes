@@ -1,0 +1,11 @@
+name: director-web
+version: 1.0.0
+description: director fe service for DCS.
+keywords:
+- dcs
+- director
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

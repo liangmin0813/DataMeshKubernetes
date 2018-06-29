@@ -1,0 +1,70 @@
+####################### k8s config ########################
+#image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-director-director"
+imageTag: "v0.1.0"
+
+# how many replicas to run
+#replicas: 3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+##
+imagePullPolicy: IfNotPresent
+
+## Persist data to a persitent volume
+persistentVolume:
+  enabled: false
+  ## mongodb-replicaset data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: "fast"
+  accessModes:
+    - ReadWriteOnce
+  size: 100Gi
+  annotations: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
+  #limits:
+  #  memory: 512Mi
+  #  cpu: 1000m
+
+####################### service_conf.toml ########################
+# service port, default "10910"
+#servicePort: 10910
+
+# logLevel: Debug,Info,Warn,Error,Fatal,Panic (case insensitive), default "Info"
+#logLevel: Info
+
+sessionCookieName: dcs_director_session
+#sessionCookieDomain: ""
+internalAccessToken: uyDddiTLo3JUSc7zmHHPZxIvgZKCngRI
+
+auth:
+  #loginPath: /login
+  #logoutPath: /logout
+  #userinfoPath: /userinfo
+  logoutRedirectPath: https://sso.datamesh.com/logout
+  #serviceName: director
+
+services:
+  libraryServiceHost: dcs-library-svc-dcs-library.jp-east-1-apps.svc.cluster.local
+  libraryServicePort: 10810
+  driveServiceHost: dcs-drive-svc-dcs-drive.jp-east-1-apps.svc.cluster.local
+  driveServicePort: 10710
+  directorServiceHost: director-srv.jp-east-1.datamesh.com
+  authServiceHost: dcs-auth-slave-svc-dcs-auth.jp-east-1-apps.svc.cluster.local
+  authServicePort: 10401
+
+mongo:
+  address: dcs-director-mongo-mongodb.jp-east-1-base.svc.cluster.local
+  #dbname: DCS_DIRECTOR_DB

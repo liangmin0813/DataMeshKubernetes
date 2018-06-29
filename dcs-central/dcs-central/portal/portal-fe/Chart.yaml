@@ -1,0 +1,11 @@
+name: portal-web
+version: 1.0.0
+description: Portal fe service for DCS.
+keywords:
+- dcs
+- portal
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

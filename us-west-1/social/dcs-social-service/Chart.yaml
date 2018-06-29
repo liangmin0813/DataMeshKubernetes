@@ -1,0 +1,11 @@
+name: dcs-social
+version: 1.0.0
+description: social service for DCS.
+keywords:
+- dcs
+- social
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

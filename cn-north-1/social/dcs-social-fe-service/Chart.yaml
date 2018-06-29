@@ -1,0 +1,11 @@
+name: social-web
+version: 1.0.0
+description: social fe service for DCS.
+keywords:
+- dcs
+- social
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

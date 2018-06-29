@@ -1,0 +1,72 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "drive-block-svc.fullname" . }}
+  labels:
+    app: {{ template "drive-block-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas | default "3" }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "drive-block-svc.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "drive-block-svc.fullname" . }}
+        image: "{{ .Values.image | default "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-drive-block-service" }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - name: dcs-drive-block
+            containerPort: {{ .Values.grpcPort | default "10705" }}
+          - name: dcs-drive-blk-h
+            containerPort: {{ .Values.servicePort | default "10715" }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.servicePort | default "10715" }}
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          timeoutSeconds: 5
+        volumeMounts:
+          - name: datadir
+            mountPath: /data/drive-block-service/data
+          - name: service-conf
+            mountPath: /data/drive-block-service/conf
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: service-conf
+          configMap:
+            name: {{ template "drive-block-svc.fullname" . }}
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: datadir
+        annotations:
+        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+        - name: datadir
+          emptyDir: {}
+{{- end }}

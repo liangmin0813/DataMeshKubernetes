@@ -1,0 +1,11 @@
+name: dcs-drive-video
+version: 1.0.0
+description: Drive Block service for DCS.
+keywords:
+- dcs
+- drive
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl

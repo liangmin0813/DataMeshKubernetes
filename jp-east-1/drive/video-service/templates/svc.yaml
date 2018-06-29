@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "drive-video-svc.fullname" . }}
+  labels:
+    app: {{ template "drive-video-svc.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: dcs-drive-video
+    port: {{ .Values.grpcPort | default "10707" }}
+    targetPort: {{ .Values.grpcPort | default "10707" }}
+  - name: dcs-drive-vdo-h
+    port: {{ .Values.servicePort | default "10717" }}
+    targetPort: {{ .Values.servicePort | default "10717" }}
+  clusterIP: None
+  selector:
+    app: {{ template "drive-video-svc.fullname" . }}

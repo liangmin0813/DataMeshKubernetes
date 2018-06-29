@@ -1,0 +1,11 @@
+name: digital-assistant
+version: 1.0.0
+description: digital-assistant service for DCS.
+keywords:
+- dcs
+- digital-assistant
+home: https://www.datamesh.com/
+maintainers:
+- name: Jianjun Xie
+  email: jianjunxie@datamesh.com
+engine: gotpl
