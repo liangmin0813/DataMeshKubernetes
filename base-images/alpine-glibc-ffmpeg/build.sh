@@ -1,0 +1,1 @@
+docker build -t datamesh/alpine-glibc-ffmpeg:1.0 .
