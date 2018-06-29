@@ -1,0 +1,9 @@
+version: '3'
+services:
+  turn-server:
+    image: registry.ap-southeast-1.aliyuncs.com/datamesh/webrtc-turnserver:v1.0
+    volumes:
+      - ./data:/srv
+    ports:
+      - "443:443"
+    network_mode: "host"
