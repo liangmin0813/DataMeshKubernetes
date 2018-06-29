@@ -1,0 +1,49 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "me-social"
+spec:
+  serviceName: me-social
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: me-social
+        name: "me-social"
+    spec:
+      containers:
+        - name: me-social
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/me-social:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: me-social
+              containerPort: 10402
+              protocol: "TCP"
+          volumeMounts:
+            - name: "me-social-conf"
+              mountPath: "/data/me-social/conf"
+            - name: "me-social-data"
+              mountPath: "/data/me-social/data"
+      imagePullSecrets:
+        - name: me-social-secret
+      volumes:
+        - name: "me-social-conf"
+          configMap:
+            name: "me-social-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"
+  volumeClaimTemplates:
+  - metadata:
+      name: me-social-data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "slow"
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 500Gi

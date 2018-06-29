@@ -1,0 +1,30 @@
+title = "MeshExpert Service Configuration. Copyright @DataMesh, 2017."
+
+x_access_token          = "test_token_1234"
+
+service_port    = ":10402"
+
+locale = "en-US"
+
+region_domain = "social.datamesh.com"
+
+auth_server_endpoint = "http://me-auth:10401"
+social_server_endpoint = "http://me-social:10402"
+
+[mongo_config]
+    address = "mongo-0.mongo:27017,mongo-1.mongo:27017,mongo-2.mongo:27017"
+
+[cache_config]
+    Address = "redis:6379"
+    Password = ""
+    IsCluster = true
+
+[oss_config]
+    Platform = "Aliyun"
+        Host = "oss-cn-beijing.aliyuncs.com"
+        Port = "80"
+        AccessKeyID = "LTAIjrFhcnc3Rg34"
+        SecretAccessKey = "0Bn2h6DIDMpN3LTfbDxlLYNU6GPKYD"
+        ApiVersion = "2016-05-31"
+        Bucket = "me-holocloud-image"
+        UseSSL = false

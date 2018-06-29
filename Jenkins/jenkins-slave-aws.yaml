@@ -1,0 +1,35 @@
+---
+  apiVersion: "v1"
+  kind: "ReplicationController"
+  metadata: 
+    name: "jenkins-slave"
+    namespace: jenkins
+    labels: 
+      name: "jenkins-slave"
+  spec: 
+    replicas: 2
+    template: 
+      metadata: 
+        name: "jenkins-slave"
+        labels: 
+          name: "jenkins-slave"
+      spec: 
+        containers: 
+          - name: "jenkins-slave"
+            image: "registry.ap-southeast-1.aliyuncs.com/datamesh/jenkins-swarm-slave:1.0"
+            imagePullPolicy: Always 
+            env: 
+            command: 
+              - "/usr/local/bin/jenkins-slave.sh"
+              - "-master"
+              - "http://jenkins:$(JENKINS_SERVICE_PORT_HTTP)"
+              - "-tunnel"
+              - "jenkins:$(JENKINS_SERVICE_PORT_SLAVE)"
+              - "-username"
+              - "jenkins"
+              - "-password"
+              - "jenkins"
+              - "-executors"
+              - "1"
+        imagePullSecrets:
+          - name: aliyun-registry-secret

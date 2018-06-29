@@ -1,0 +1,14 @@
+# Headless service for stable DNS entries of StatefulSet members.
+apiVersion: v1
+kind: Service
+metadata:
+  name: me-social
+  labels:
+    app: me-social
+spec:
+  ports:
+  - name: me-social
+    port: 10402
+  clusterIP: None
+  selector:
+    app: me-social

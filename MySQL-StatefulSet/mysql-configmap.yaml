@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql
+  labels:
+    app: mysql
+data:
+  master.cnf: |
+    # Apply this config only on the master.
+    [mysqld]
+    log-bin
+    binlog-ignore-db = "mysql"
+    character_set_server = utf8
+    ## network
+    max_allowed_packet = 16M
+    max_connections = 1000
+    max_connect_errors = 10000
+    wait_timeout = 60
+  slave.cnf: |
+    # Apply this config only on slaves.
+    [mysqld]
+    super-read-only
+    character_set_server = utf8
+    ## network
+    max_allowed_packet = 16M
+    max_connections = 1000
+    max_connect_errors = 10000
+    wait_timeout = 60
+

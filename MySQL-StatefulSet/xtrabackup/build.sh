@@ -1,0 +1,1 @@
+docker build -t "datamesh/xtrabackup:1.0" .
