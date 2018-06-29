@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "social-drnsync"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: social-drnsync
+        name: "social-drnsync"
+    spec:
+      containers:
+        - name: social-drnsync
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-drnsync-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: social-drnsync
+              containerPort: 8818
+              protocol: "TCP"
+          volumeMounts:
+            - name: "social-drnsync-svc-conf"
+              mountPath: "/data/drnsync/conf"
+            - name: "social-drnsync-svc-data"
+              mountPath: "/data/drnsync/data"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "social-drnsync-svc-data"
+          emptyDir: {}
+        - name: "social-drnsync-svc-conf"
+          configMap:
+            name: "social-drnsync-svc-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"

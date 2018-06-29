@@ -1,0 +1,16 @@
+title = "DRN-Sync Configuration. Copyright @DataMesh, 2017."
+
+log_level = "Debug" # Debug,Info,Warn,Error,Fatal,Panic (case insensitive)
+
+service_port = ":8818"
+
+main_sys_address= "https://portal.datamesh.ai/api"
+partition       = "dcs"
+service         = "social"
+region          = "cn-north-1"
+sync_interval   = 10
+
+[mongo_config]
+    Address = "mongotest-mongodb-replicaset-0.mongotest-mongodb-replicaset.test.svc.cluster.local:27017"
+    Dbname  = "DCS_SOCIAL_SHARE_AUTH_DB"
+

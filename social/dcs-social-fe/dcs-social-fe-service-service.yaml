@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dcs-social-fe
+  labels:
+    app: dcs-social-fe
+spec:
+  ports:
+  - name: dcs-social-fe
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: dcs-social-fe

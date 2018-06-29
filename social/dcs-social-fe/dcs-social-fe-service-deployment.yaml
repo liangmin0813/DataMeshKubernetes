@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-social-fe"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-social-fe
+        name: "dcs-social-fe"
+    spec:
+      containers:
+        - name: dcs-social-fe
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-social-fe-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-social-fe
+              containerPort: 80
+              protocol: "TCP"
+          volumeMounts:
+            - name: "dcs-social-nginx-conf"
+              mountPath: "/etc/nginx/conf.d"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "dcs-social-nginx-conf"
+          configMap:
+            name: "dcs-social-nginx-conf"
+            items:
+              - key: "social.conf"
+                path: "social.conf"

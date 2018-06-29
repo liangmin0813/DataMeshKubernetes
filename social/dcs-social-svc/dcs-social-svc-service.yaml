@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dcs-social-svc
+  labels:
+    app: dcs-social-svc
+spec:
+  ports:
+  - name: dcs-social-svc
+    port: 10402
+    targetPort: 10402
+  clusterIP: None
+  selector:
+    app: dcs-social-svc

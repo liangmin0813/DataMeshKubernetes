@@ -1,0 +1,27 @@
+title = "MeshExpert Service Configuration. Copyright @DataMesh, 2017."
+
+log_level = "Debug"
+
+service_port = ":10402"
+
+social_server_endpoint = "https://social.cn-north-1.datamesh.ai/"
+
+[mongo_config]
+    Address = "mongotest-mongodb-replicaset-0.mongotest-mongodb-replicaset.test.svc.cluster.local:27017"
+    
+[cache_config]
+    Address = "redistest-redis.test.svc.cluster.local:6379"
+    Password = "I9SSn4yS01QQb8a09kgbDXK3joOvXcrr"
+    DbNum = 9
+    IsCluster = false
+ 
+[oss_config]
+    Platform = "Azure"
+    Host = "core.chinacloudapi.cn"
+    Port = "443"
+    AccessKeyID = "datameshsocial"
+    SecretAccessKey = "iuJSMsxbeoppvVdig2HXcuBf0AY4DkDaAH0wulOedWxXNCAbmTMhWy5jYrhoEip3Xs7s8oMc1LB03KYISzrCbA=="
+    ApiVersion = "2016-05-31"
+    Bucket = "datameshsocial"
+    UseSSL = true
+

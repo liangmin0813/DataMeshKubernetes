@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: cn-north-1-ing
+  annotations:
+    ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - social.cn-north-1.datamesh.ai
+    secretName: wildcard-cn-north-1-social
+  rules:
+  - host: social.cn-north-1.datamesh.ai
+    http:
+      paths:
+      - backend:
+          serviceName: dcs-social-fe
+          servicePort: 80
+        path: /
+      - backend:
+          serviceName: dcs-social-svc
+          servicePort: 10402
+        path: /api/
