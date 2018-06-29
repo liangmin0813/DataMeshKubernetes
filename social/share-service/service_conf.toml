@@ -1,0 +1,57 @@
+titlervice-21jj5 
+ ervice-21jj5 
+vc
+hExper tt Service ServiceConfiguration. Copyrighhare-service-7qccb
+ @DataMesh, 2017."
+
+log_level = "Debug"
+
+x_access_token          = "test_token_1234"
+
+auth_switch = true
+
+service_port    = ":10402"
+
+share_grpc_port = ":50002"
+video_grpc_port = ":50001"
+
+locale = "en-US"
+
+region_domain = "api.cn-north-1.datamesh.ai"
+
+auth_server_endpoint = "http://auth-service:10401"
+social_server_endpoint = "http://share-service:10402"
+video_grpc_server_endpoint = "video-service"
+share_grpc_server_endpoint = "share-service"
+
+[mongo_config]
+    Address = "mongo-0.mongodb:27017,mongo-1.mongodb:27017,mongo-2.mongodb:27017"
+    
+[cache_config]
+    Address = "redis-1:6379"
+    Password = ""
+    DbNum = 9
+
+[hls_conf]
+	hls_dir = "/data/share-service/hls"
+ 
+[oss_config]
+    Platform = "Azure"
+    Host = "core.chinacloudapi.cn"
+    Port = "443"
+    AccessKeyID = "datameshsocial"
+    SecretAccessKey = "iuJSMsxbeoppvVdig2HXcuBf0AY4DkDaAH0wulOedWxXNCAbmTMhWy5jYrhoEip3Xs7s8oMc1LB03KYISzrCbA=="
+    ApiVersion = "2016-05-31"
+    Bucket = "datameshsocial"
+    UseSSL = true
+
+#[oss_config]
+#    Platform = "Aliyun"
+#	Host = "oss-cn-beijing.aliyuncs.com"
+#	Port = "80"
+#	AccessKeyID = "LTAIjrFhcnc3Rg34"
+#	SecretAccessKey = "0Bn2h6DIDMpN3LTfbDxlLYNU6GPKYD"
+#	ApiVersion = "2016-05-31"
+#	Bucket = "me-holocloud-image"
+#	UseSSL = false
+

@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-social-share-service"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-social-share-service
+        name: "dcs-social-share-service"
+    spec:
+      containers:
+        - name: dcs-social-share-service
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-social-share-service:dev-cloud"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-social-share-service
+              containerPort: 10402
+              protocol: "TCP"
+          volumeMounts:
+            - name: "share-service-conf"
+              mountPath: "/data/share-service/conf"
+            - name: "share-service-data"
+              mountPath: "/data/share-service/data"
+      imagePullSecrets:
+        - name: share-service-secret
+      volumes:
+        - name: "share-service-data"
+          emptyDir: {}
+        - name: "share-service-conf"
+          configMap:
+            name: "share-service-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"
+              - key: "auth_conf.toml"
+                path: "auth_conf.toml"

@@ -1,0 +1,40 @@
+title = "MeshExpert Service Configuration. Copyright @DataMesh, 2017."
+
+LogLevel = "Debug" # Debug,Info,Warn,Error,Fatal,Panic (case insensitive)
+
+Locale = "en-US"
+
+[MongoConfig]
+# comma-separated
+    Address = "mongo-0.mongodb:27017,mongo-1.mongodb:27017,mongo-2.mongodb:27017"
+    Dbname  = "DCS_SOCIAL_SHARE_AUTH_DB"
+
+[CacheConfig]
+    Address = "redis-1:6379"
+    Password = ""
+    DbNum = 11
+    IsCluster = True
+
+[CASOptions]
+    CASUrl            = "https://sso.datamesh.ai"
+    SendService       = false
+    LoginPath         = "/login"
+    LogoutPath        = "/logout"
+    UserinfoPath      = "/userinfo"
+    LogoutRedirectUrl = ""
+    SessionCookieName = "dcs_social_session"
+    SessionCookieDomain = ""
+
+
+[DRNSyncOptions]
+    Address         = "https://portal.datamesh.ai/api"
+    Partition       = "dcs"
+    Service         = "social"
+    Region          = "cn-north-1"
+    TickerInterval  = 10
+
+[MessageQueueConf]
+    Username = "datamesh"
+    Password = "datamesh_rabbitmq_2017"
+    Host     = "40.125.200.102"
+    Port     = 5672

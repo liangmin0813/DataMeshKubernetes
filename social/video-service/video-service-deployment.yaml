@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-social-video-service"
+spec:
+  serviceName: dcs-social-video-service
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-social-video-service
+        name: "dcs-social-video-service"
+    spec:
+      containers:
+        - name: dcs-social-video-service
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-social-video-service:dev-cloud"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-social-video-service
+              containerPort: 10403
+              protocol: "TCP"
+          volumeMounts:
+            - name: "video-service-conf"
+              mountPath: "/data/video-service/conf"
+            - name: "video-service-data"
+              mountPath: "/data/video-service/data"
+      imagePullSecrets:
+        - name: video-service-secret
+      volumes:
+        - name: "video-service-data"
+          emptyDir: {}
+        - name: "video-service-conf"
+          configMap:
+            name: "video-service-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"
