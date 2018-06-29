@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-portal"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-portal
+        name: "dcs-portal"
+    spec:
+      containers:
+        - name: dcs-portal
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-portal
+              containerPort: 8822
+              protocol: "TCP"
+          volumeMounts:
+            - name: "portal-service-conf"
+              mountPath: "/data/portal-service/conf"
+            - name: "portal-service-data"
+              mountPath: "/data/portal-service/data"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "portal-service-data"
+          emptyDir: {}
+        - name: "portal-service-conf"
+          configMap:
+            name: "portal-service-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"
+              - key: "auth_conf.toml"
+                path: "auth_conf.toml"

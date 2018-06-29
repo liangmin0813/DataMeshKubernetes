@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dcs-mail-svc
+  labels:
+    app: dcs-mail-svc
+spec:
+  ports:
+  - name: dcs-mail-svc
+    port: 8094
+    targetPort: 8094
+  clusterIP: None
+  selector:
+    app: dcs-mail-svc

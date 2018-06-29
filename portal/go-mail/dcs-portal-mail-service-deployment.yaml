@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-mail-svc"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-mail-svc
+        name: "dcs-mail-svc"
+    spec:
+      containers:
+        - name: dcs-mail-svc
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-mail-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-mail-svc
+              containerPort: 8094
+              protocol: "TCP"
+          volumeMounts:
+            - name: "mail-service-conf"
+              mountPath: "/data/go-mail/conf"
+            - name: "mail-service-data"
+              mountPath: "/data/go-mail/data"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "mail-service-data"
+          emptyDir: {}
+        - name: "mail-service-conf"
+          configMap:
+            name: "mail-service-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"

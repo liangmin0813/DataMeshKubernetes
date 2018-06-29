@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-portal-fe"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-portal-fe
+        name: "dcs-portal-fe"
+    spec:
+      containers:
+        - name: dcs-portal-fe
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-portal-fe-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-portal-fe
+              containerPort: 80
+              protocol: "TCP"
+          volumeMounts:
+            - name: "nginx-conf"
+              mountPath: "/etc/nginx/conf.d"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "nginx-conf"
+          configMap:
+            name: "nginx-conf"
+            items:
+              - key: "dcs.conf"
+                path: "dcs.conf"
+              - key: "portal.conf"
+                path: "portal.conf"

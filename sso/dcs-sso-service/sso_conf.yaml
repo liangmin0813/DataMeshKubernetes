@@ -1,0 +1,44 @@
+---
+title: MeshExpert CAS SSO
+url: https://sso.datamesh.ai
+
+top_domain: datamesh.ai
+default_redirect_url: https://dcs.datamesh.ai
+complete_register_url: https://dcs.datamesh.ai/signup/#/continue
+
+############################ message queue for SLO #######################
+message_queue_conf:
+  username: datamesh
+  password: datamesh_rabbitmq_2017
+  host: mqtest-rabbitmq.test.svc.cluster.local
+  port: 5672
+
+
+############################ backend storage #############################
+# 'mongodb' or 'mysql'
+backend_type: mongodb
+mongo:
+  # comma-separated
+  address: mongotest-mongodb-replicaset-0.mongotest-mongodb-replicaset.test.svc.cluster.local:27017
+redis:
+  address: redistest-redis.test.svc.cluster.local:6379
+  password: I9SSn4yS01QQb8a09kgbDXK3joOvXcrr
+  db_num: 12
+  is_cluster: false
+#mysql:
+#  host: 127.0.0.1:3306
+#middlewares:
+#       - throttling
+
+#throttling:
+#  max_failures_by_ip: 100
+#  max_failures_by_username: 10
+#  block_time: 300
+
+#ticket_validity:
+#  login_ticket: 120
+#  ticket_granting_ticket: 3600
+#  service_ticket: 30
+
+# protocol: basic
+authenticator: basic

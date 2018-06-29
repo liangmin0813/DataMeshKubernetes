@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-sso-svc"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-sso-svc
+        name: "dcs-sso-svc"
+    spec:
+      containers:
+        - name: dcs-sso-svc
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-sso-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-sso-svc
+              containerPort: 8811
+              protocol: "TCP"
+          volumeMounts:
+            - name: "sso-svc-conf"
+              mountPath: "/data/sso-service/conf"
+            - name: "sso-svc-data"
+              mountPath: "/data/sso-service/data"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "sso-svc-data"
+          emptyDir: {}
+        - name: "sso-svc-conf"
+          configMap:
+            name: "sso-svc-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"
+              - key: "sso_conf.yaml"
+                path: "sso_conf.yaml"

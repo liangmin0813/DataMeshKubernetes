@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "dcs-drnsync"
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: dcs-drnsync
+        name: "dcs-drnsync"
+    spec:
+      containers:
+        - name: dcs-drnsync
+          image: "registry.ap-southeast-1.aliyuncs.com/datamesh/dcs-drnsync-service:test"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "100Mi"
+          ports:
+            - name: dcs-drnsync
+              containerPort: 8818
+              protocol: "TCP"
+          volumeMounts:
+            - name: "drnsync-svc-conf"
+              mountPath: "/data/drnsync/conf"
+            - name: "drnsync-svc-data"
+              mountPath: "/data/drnsync/data"
+      imagePullSecrets:
+        - name: aliyun-secret
+      volumes:
+        - name: "drnsync-svc-data"
+          emptyDir: {}
+        - name: "drnsync-svc-conf"
+          configMap:
+            name: "drnsync-svc-conf"
+            items:
+              - key: "service_conf.toml"
+                path: "service_conf.toml"

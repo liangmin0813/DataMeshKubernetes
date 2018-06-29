@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dcs-sso-svc
+  labels:
+    app: dcs-sso-svc
+spec:
+  ports:
+  - name: dcs-sso-svc
+    port: 8811
+    targetPort: 8811
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: dcs-sso-svc

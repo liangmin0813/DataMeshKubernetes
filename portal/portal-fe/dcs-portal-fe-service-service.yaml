@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dcs-portal-fe
+  labels:
+    app: dcs-portal-fe
+spec:
+  ports:
+  - name: dcs-portal-fe
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  clusterIP: None
+  selector:
+    app: dcs-portal-fe

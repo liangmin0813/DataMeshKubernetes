@@ -1,0 +1,19 @@
+title = "DCS Portal Configuration. Copyright @DataMesh, 2017."
+
+log_level = "Debug" # Debug,Info,Warn,Error,Fatal,Panic (case insensitive)
+
+
+service_port            = ":8822"
+top_domain              = "datamesh.ai"
+mail_server_address    = "http://dcs-mail-svc.test.svc.cluster.local:8094/"
+billing_server_address  = "http://dcs-billing.test.svc.cluster.local:6777/"
+invitation_confirm_address = "https://dcs.datamesh.ai/signup/#/invite"
+
+[mysql_config]
+    Tag     = "test"
+    Uname   = "root"
+    Passwd  = "datamesh3i1udIesr1p8z0x173"
+    Host    = "mysqltest-mysqlha-0.mysqltest-mysqlha.test.svc.cluster.local"
+    Port    = "3306"
+    Dbname  = "DCS_PORTAL_DB"
+    Charset = "UTF8"

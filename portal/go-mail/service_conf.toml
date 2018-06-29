@@ -1,0 +1,20 @@
+title = "go mail configurations"
+
+
+service_port = ":8094"
+
+log_level = "Debug" # Debug,Info,Warn,Error,Fatal,Panic (case insensitive)
+
+
+send_cloud_user1                = "devops_test_DCHKPr"
+send_cloud_key1                 = "Xoag4DRsecXjh5rv" # todo need key
+
+
+[mysql_config]
+    tag     = "test"
+    uname   = "root"
+    passwd  = "datamesh3i1udIesr1p8z0x173"
+    host    = "mysqltest-mysqlha-0.mysqltest-mysqlha.test.svc.cluster.local"
+    port    = "3306"
+    dbname  = "DCS_MAIL_DB"
+    charset = "UTF8"
